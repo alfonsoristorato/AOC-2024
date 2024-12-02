@@ -1,21 +1,24 @@
+import kotlin.math.abs
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
-    }
 
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
+    var distanceInLocationIds = 0
+    var similarityScore = 0
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
+    readInput("Day01")
+        .map { line ->
+            val (num1, num2) = line.split("   ").map { it.toInt() }
+            Pair(num1, num2)
+        }
+        .unzip()
+        .let { (list1, list2) ->
+            val list2Sorted = list2.sorted()
+            list1.sorted().forEachIndexed { index, numb ->
+                distanceInLocationIds += abs(numb - list2Sorted[index])
+                similarityScore += numb * list2.count { it == numb }
+            }
+        }
+    println("PART 1: $distanceInLocationIds")
+    println("PART 2: $similarityScore")
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
 }
