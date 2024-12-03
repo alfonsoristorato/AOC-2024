@@ -1,33 +1,34 @@
 import java.math.BigInteger
 
 fun main() {
-    var resultPartOne = BigInteger.ZERO
-    var resultPartTwo = BigInteger.ZERO
+    var resultPartOne = 0
+    var resultPartTwo = 0
     val partOneRegex = Regex("""mul\((\d{1,3}),\s?(\d{1,3})\)""")
     val partTwoRegex = Regex("""(mul\(\d{1,3},\s?\d{1,3}\)|do\(\)|don't\(\))""")
     var `do` = true
 
-    val input = readInput("Day03")
-    input.forEach { line ->
+    readInput("Day03").forEach { line ->
         partOneRegex.findAll(line).forEach {
-            resultPartOne += it.groupValues[1].toBigInteger() * it.groupValues[2].toBigInteger()
+            resultPartOne += it.groupValues[1].toInt() * it.groupValues[2].toInt()
         }
         partTwoRegex.findAll(line).forEach { it ->
-            if(it.value == "don't()") {
-                `do` = false
-            }
-            if(it.value == "do()") {
-                `do` = true
-            }
-            if (`do`) {
-                partOneRegex.findAll(it.value).forEach {
-                    resultPartTwo += it.groupValues[1].toBigInteger() * it.groupValues[2].toBigInteger()
+            when (it.value){
+                "do()" -> `do` = true
+                "don't()" -> `do` = false
+                else -> {
+                    if(`do`){
+                        partOneRegex.findAll(it.value).forEach {
+                            resultPartTwo += it.groupValues[1].toInt() * it.groupValues[2].toInt()
+                        }
+                    }
                 }
             }
         }
     }
-    println(resultPartOne)
-    println(resultPartTwo)
+    print("PART 1: ")
+    resultPartOne.println()
+    print("PART 2: ")
+    resultPartTwo.println()
 }
 
 
