@@ -6,17 +6,17 @@ fun main() {
     var `do` = true
 
     readInput("Day03").forEach { line ->
-        partOneRegex.findAll(line).forEach {
-            resultPartOne += it.groupValues[1].toInt() * it.groupValues[2].toInt()
+        partOneRegex.findAll(line).forEach {  mulMatch ->
+            resultPartOne += mulMatch.groupValues[1].toInt() * mulMatch.groupValues[2].toInt()
         }
-        partTwoRegex.findAll(line).forEach { it ->
-            when (it.value){
+        partTwoRegex.findAll(line).forEach {
+            when (val matchResultValue = it.value) {
                 "do()" -> `do` = true
                 "don't()" -> `do` = false
                 else -> {
-                    if(`do`){
-                        partOneRegex.findAll(it.value).forEach {
-                            resultPartTwo += it.groupValues[1].toInt() * it.groupValues[2].toInt()
+                    if (`do`) {
+                        partOneRegex.find(matchResultValue)?.let { mulMatch ->
+                            resultPartTwo += mulMatch.groupValues[1].toInt() * mulMatch.groupValues[2].toInt()
                         }
                     }
                 }
