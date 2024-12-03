@@ -1,5 +1,3 @@
-import java.math.BigInteger
-
 fun main() {
     var resultPartOne = 0
     var resultPartTwo = 0
