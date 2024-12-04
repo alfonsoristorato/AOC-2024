@@ -23,12 +23,12 @@ fun findXmas(input: List<String>, xCharIndex: Int, lineIndex: Int): Int {
 
 
 enum class Direction(
-    val mLineIndex: Int,
-    val mXCharIndex: Int,
-    val aLineIndex: Int,
-    val aXCharIndex: Int,
-    val sLineIndex: Int,
-    val sXCharIndex: Int
+    val mLineIndexModifier: Int,
+    val mXCharIndexModifier: Int,
+    val aLineIndexModifier: Int,
+    val aXCharIndexModifier: Int,
+    val sLineIndexModifier: Int,
+    val sXCharIndexModifier: Int
 ) {
     RIGHT(0, 1, 0, 2, 0, 3),
     LEFT(0, -1, 0, -2, 0, -3),
@@ -49,9 +49,9 @@ fun checkWithDirections(
 ): Boolean {
     return runCatching {
         val xmasMaybe =
-            input[lineIndex + directions.mLineIndex][xCharIndex + directions.mXCharIndex].toString() +
-                    input[lineIndex + directions.aLineIndex][xCharIndex + directions.aXCharIndex].toString() +
-                    input[lineIndex + directions.sLineIndex][xCharIndex + directions.sXCharIndex].toString()
+            input[lineIndex + directions.mLineIndexModifier][xCharIndex + directions.mXCharIndexModifier].toString() +
+                    input[lineIndex + directions.aLineIndexModifier][xCharIndex + directions.aXCharIndexModifier].toString() +
+                    input[lineIndex + directions.sLineIndexModifier][xCharIndex + directions.sXCharIndexModifier].toString()
 
         return xmasMaybe == xmasRemaining
     }
