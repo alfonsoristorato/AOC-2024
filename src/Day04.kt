@@ -37,12 +37,9 @@ fun findMasXShaped(input: List<String>, aCharIndex: Int, lineIndex: Int): Int {
         val topRight = input[lineIndex - 1][aCharIndex + 1]
         val bottomLeft = input[lineIndex + 1][aCharIndex - 1]
 
-        if (topLeft == 'X' || bottomRight == 'X' || topRight == 'X' || bottomLeft == 'X' || topLeft == 'A' || bottomRight == 'A' || topRight == 'A' || bottomLeft == 'A') {
-            return@runCatching
-        }
-        if (topLeft == bottomRight || topRight == bottomLeft) {
-            return@runCatching
-        }
+        if (listOf(topLeft, bottomRight, topRight, bottomLeft).any { it == 'X' || it == 'A' }) return@runCatching
+        if (topLeft == bottomRight || topRight == bottomLeft) return@runCatching
+
         counter++
     }
     return counter
