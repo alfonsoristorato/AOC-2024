@@ -2,21 +2,21 @@ import java.awt.Point
 
 fun main() {
     val input = readInput("Day08")
-    val antennasPoints = mutableListOf<PointAndChar>()
+    val antennasPoints = mutableListOf<PointAndValue<Char>>()
     val antiNodesPoints = mutableSetOf<Point>()
     val (maxX, maxY) = input[0].length to input.size
 
     input.forEachIndexed { yIndex, string ->
         string.forEachIndexed { xIndex, char ->
             if (char.isDigit() || char.isLetter()) {
-                antennasPoints.add(PointAndChar(Point(xIndex, yIndex), char))
+                antennasPoints.add(PointAndValue(Point(xIndex, yIndex), char))
             }
         }
     }
-    val distinctAntennas = antennasPoints.map { it.char }.distinct()
+    val distinctAntennas = antennasPoints.map { it.value }.distinct()
 
     distinctAntennas.forEach { antenna ->
-        val antennaPoints = antennasPoints.filter { it.char == antenna }
+        val antennaPoints = antennasPoints.filter { it.value == antenna }
         antennaPoints.forEach { pointAndChar ->
             antennaPoints.filter { it != pointAndChar }.forEach { differentPointAndChar ->
                 val distancePoints = differentPointAndChar.point - pointAndChar.point
@@ -35,7 +35,7 @@ fun main() {
 
     val antiNodesPointsPart2 = mutableSetOf<Point>()
     distinctAntennas.forEach { antenna ->
-        val antennaPoints = antennasPoints.filter { it.char == antenna }
+        val antennaPoints = antennasPoints.filter { it.value == antenna }
         antennaPoints.forEach { pointAndChar ->
             antennaPoints.filter { it != pointAndChar }.forEach { differentPointAndChar ->
                 val distancePoints = differentPointAndChar.point - pointAndChar.point
@@ -66,4 +66,4 @@ operator fun Point.plus(other: Point) = Point(x + other.x, y + other.y)
 operator fun Point.minus(other: Point) = Point(x - other.x, y - other.y)
 operator fun Point.times(multiplier: Int) = Point(x * multiplier, y * multiplier)
 
-data class PointAndChar(val point: Point, val char: Char)
+data class PointAndValue<T>(val point: Point, val value: T)
