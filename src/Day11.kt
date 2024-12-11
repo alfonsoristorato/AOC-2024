@@ -1,34 +1,34 @@
 fun main() {
     val input = readInput("Day11")[0]
-    val stones = input.split(" ").toMutableList()
+    val stones = input.split(" ").map { it.toLong() }
+    println("PART 1: ${blinkAndCount(stones, 25)}")
+    println("PART 2: ${blinkAndCount(stones, 75)}")
+}
 
-    var nextStone = 0
-    var blink = 0
-    while (true) {
-        if (nextStone > stones.size - 1) {
-            nextStone = 0
-            blink++
-            if (blink == 25) {
-                break
+fun blinkAndCount(stones: List<Long>, blinks: Int): Long {
+    var sameStonesCount = stones.associateWith { 1L }
+    for (i in 0 until blinks) {
+        val newStonesCount = mutableMapOf<Long, Long>()
+        for ((stone, stoneCount) in sameStonesCount) {
+            when {
+                stone == 0L -> newStonesCount[1] = newStonesCount[1]?.plus(stoneCount) ?: (0 + stoneCount)
+                stone.toString().length % 2 == 0 -> {
+                    val left = stone.toString().substring(0,stone.toString().length /2).toLong()
+                    val right = stone.toString().substring(stone.toString().length /2).toLong()
+
+                    newStonesCount[left] = newStonesCount[left]?.plus(stoneCount) ?: (0 + stoneCount)
+                    newStonesCount[right] = newStonesCount[right]?.plus(stoneCount) ?: (0 + stoneCount)
+                }
+                else -> {
+                    val stoneTimes2024 = stone * 2024
+                    newStonesCount[stoneTimes2024] =
+                        newStonesCount[stoneTimes2024]?.plus(stoneCount) ?: (0 + stoneCount)
+                }
             }
         }
-        if (stones[nextStone] == "0") {
-            stones[nextStone] = "1"
-            nextStone += 1
-            continue
-        }
-        if (stones[nextStone].length % 2 == 0) {
-            stones.add(nextStone + 1, stones[nextStone].substring(stones[nextStone].length / 2).toInt().toString())
-            stones[nextStone] = stones[nextStone].substring(0, stones[nextStone].length / 2)
-            nextStone += 2
-            continue
-        }
-        stones[nextStone] = (stones[nextStone].toLong() * 2024).toString()
-        nextStone += 1
-        continue
+        sameStonesCount = newStonesCount
     }
-    println("PART 1: ${stones.size}")
-
+    return sameStonesCount.values.sum()
 }
 
 
