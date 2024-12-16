@@ -1,4 +1,5 @@
 import java.awt.Point
+
 fun main() {
     val input = readInput("Day14")
     val maxX = 101
@@ -18,7 +19,26 @@ fun main() {
             add(PointAndValue(robotPosition, robotVelocity))
         }
     }.toMutableList()
-    repeat(100) {
+
+    moveRobotsForNSeconds(robotsAndVelocity, 100, maxX, maxY, 0)
+    val pointsInQuadrants = groupPointsByQuadrants(robotsAndVelocity.filter { it.point.y != middleY || it.point.x != middleX }.map { it.point }, middleX, middleY)
+    val productOfSizes = pointsInQuadrants.values.map { it.size }.fold(1) { acc, size -> acc * size }
+    println("PART 1: $productOfSizes")
+    moveRobotsForNSeconds(robotsAndVelocity, Int.MAX_VALUE, maxX, maxY,100)
+}
+
+fun printMap(robotsAndVelocity: List<PointAndValue<Point>>, maxX: Int, maxY: Int) {
+    println()
+    val map = Array(maxY) { CharArray(maxX) { '.' } }
+    robotsAndVelocity.forEach {
+        map[it.point.y][it.point.x] = '#'
+    }
+
+    map.forEach { println(it.joinToString("")) }
+}
+
+private fun moveRobotsForNSeconds(robotsAndVelocity: MutableList<PointAndValue<Point>>, seconds: Int, maxX: Int, maxY: Int, elapsedSecondsSoFar:Int) {
+    repeat(seconds) {
         robotsAndVelocity.forEach { robotAndVelocity ->
             var newX = robotAndVelocity.point.x + robotAndVelocity.value.x
             var newY = robotAndVelocity.point.y + robotAndVelocity.value.y
@@ -42,25 +62,29 @@ fun main() {
                 robotAndVelocity.point.y = newY
             }
         }
-
+        robotsAndVelocity.groupBy { it.point.y }.forEach { (y, points) ->
+            val xValues = points.map { it.point.x }.sorted()
+            var sequentialCount = 1
+            for (i in 1 until xValues.size) {
+                if (xValues[i] == xValues[i - 1] + 1) {
+                    sequentialCount++
+                    if (sequentialCount >= 10) {
+                        println("At least 20 sequential x values in group with y=$y. This happened at second ${it + 1 + elapsedSecondsSoFar}")
+                        println("PART 2: ${it + 1 + elapsedSecondsSoFar}")
+                        println("Here's the tree :) ")
+                        printMap(robotsAndVelocity, maxX, maxY)
+                        return
+                    }
+                } else {
+                    sequentialCount = 1
+                }
+            }
+        }
     }
-    robotsAndVelocity.removeAll { it.point.y == middleY || it.point.x == middleX }
-    val pointsInQuadrants = groupPointsByQuadrants(robotsAndVelocity.map { it.point }, middleX, middleY)
-    val productOfSizes = pointsInQuadrants.values.map { it.size }.fold(1) { acc, size -> acc * size }
-    println(productOfSizes)
-}
-
-fun printMap(robotsAndVelocity: List<PointAndValue<Point>>, maxX: Int, maxY: Int, middleX: Int, middleY: Int) {
-    val map = Array(maxY) { CharArray(maxX) { '.' } }
-    robotsAndVelocity.forEach {
-        map[it.point.y][it.point.x] = '#'
-    }
-
-    map.forEach { println(it.joinToString("")) }
 }
 
 fun groupPointsByQuadrants(points: List<Point>, midX: Int, midY: Int): Map<String, List<Point>> {
-        val quadrants = mutableMapOf(
+    val quadrants = mutableMapOf(
         "Q1" to mutableListOf<Point>(),
         "Q2" to mutableListOf<Point>(),
         "Q3" to mutableListOf<Point>(),
